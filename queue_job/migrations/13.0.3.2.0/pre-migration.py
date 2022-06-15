@@ -2,12 +2,16 @@
 
 import logging
 
-from odoo.tools.sql import column_exists
+from odoo.tools.sql import column_exists, table_exists
 
 _logger = logging.getLogger(__name__)
 
 
 def migrate(cr, version):
+    if not table_exists(cr, "queue_job") or not column_exists(
+        cr, "queue_job", "record_ids"
+    ):
+        return
     if not column_exists(cr, "queue_job", "records"):
         cr.execute(
             """
